@@ -1,0 +1,1836 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IETE-SF â€” Chat w Us</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>âš¡</text></svg>">
+<style>
+  /* ============================================================
+     FONTS & DESIGN TOKENS
+     Matches ietempstme.com / chat.html visual hierarchy
+     ============================================================ */
+  @font-face {
+    font-family: 'Nohemi';
+    src: url('./fonts/Nohemi-Regular-BF6438cc4d0e493.ttf') format('truetype');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Nohemi';
+    src: url('./fonts/Nohemi-Bold-BF6438cc587b5b5.ttf') format('truetype');
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Afacad';
+    src: url('./fonts/Afacad-Regular.ttf') format('truetype');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Afacad';
+    src: url('./fonts/Afacad-Italic.ttf') format('truetype');
+    font-weight: 400; font-style: italic; font-display: swap;
+  }
+
+  :root {
+    --color-text: #1a1a1a;
+    --color-bg: #F7F5F1;
+    --color-accent: #1818FE;           /* IETE Swallow Blue */
+    --color-accent-hover: #0a0ad8;
+    --color-accent-light: #ececff;
+    --color-accent-on-dark: #7070FF;
+    --font-display: 'Nohemi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Afacad', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100vh; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: var(--color-accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  ::selection { background: var(--color-accent); color: #fff; }
+
+  /* ============================== NAVBAR ============================== */
+  .site-nav {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(920px, calc(100% - 32px));
+    height: 60px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px 0 20px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  }
+  .site-nav__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #111;
+  }
+  .site-nav__logo {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  .site-nav__logo svg {
+    width: 22px;
+    height: 22px;
+    fill: var(--color-accent);
+  }
+  .site-nav__menu {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .site-nav__link {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.65);
+    padding: 7px 16px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+  }
+  .site-nav__link:hover {
+    color: #000;
+    background: rgba(0, 0, 0, 0.04);
+    text-decoration: none;
+  }
+  .site-nav__link.is-active {
+    background: rgba(0, 0, 0, 0.07);
+    color: #111;
+    font-weight: 600;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  @media (max-width: 650px) {
+    .site-nav { padding: 0 12px; height: 54px; }
+    .site-nav__link { padding: 6px 10px; font-size: 0.86rem; }
+    .site-nav__brand span { display: none; }
+  }
+
+  /* ============================== CHAT SECTION ============================== */
+  main {
+    flex: 1;
+    padding-top: 112px;
+  }
+  .chat-section {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  .chat-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.6rem, 7vw, 4.2rem);
+    color: #4A4235;
+    text-align: center;
+    margin: 0 0 10px;
+    letter-spacing: -0.02em;
+  }
+  .chat-subtitle {
+    text-align: center;
+    font-size: 1.15rem;
+    color: rgba(74, 66, 53, 0.75);
+    margin: 0 0 28px;
+    line-height: 1.4;
+  }
+
+  /* Quick Suggestion Chips */
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .chip {
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(0, 0, 0, 0.18);
+    background: #fff;
+    color: rgba(0, 0, 0, 0.65);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  }
+  .chip:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(24, 24, 254, 0.08);
+  }
+  .chip:active {
+    transform: translateY(0);
+  }
+
+  /* Chat Box Container */
+  .chat-box {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-header-bar {
+    padding: 12px 20px;
+    background: #FAFAF8;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: rgba(0,0,0,0.5);
+  }
+  .chat-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+  .chat-status__dot {
+    width: 8px;
+    height: 8px;
+    background: #10B981;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  }
+  .chat-list {
+    height: 420px;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-behavior: smooth;
+  }
+  .chat-msg {
+    max-width: 82%;
+    padding: 14px 18px;
+    border-radius: 18px;
+    line-height: 1.55;
+    font-size: 1rem;
+    word-wrap: break-word;
+    animation: fadeInMsg 0.25s ease-out;
+  }
+  @keyframes fadeInMsg {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .chat-msg--bot {
+    align-self: flex-start;
+    background: rgba(0, 0, 0, 0.05);
+    color: #1a1a1a;
+    border-bottom-left-radius: 4px;
+  }
+  .chat-msg--bot strong {
+    color: #000;
+    font-weight: 700;
+  }
+  .chat-msg--bot em {
+    color: rgba(0,0,0,0.7);
+  }
+  .chat-msg--user {
+    align-self: flex-end;
+    background: var(--color-accent);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 14px rgba(24, 24, 254, 0.25);
+  }
+
+  /* Markdown & List formatting inside Bot Bubble */
+  .bot-formatted-content p {
+    margin: 0 0 8px 0;
+  }
+  .bot-formatted-content p:last-child {
+    margin-bottom: 0;
+  }
+  .bot-formatted-content ul {
+    margin: 6px 0;
+    padding-left: 0;
+  }
+  .bot-formatted-content li {
+    position: relative;
+    padding-left: 14px;
+    margin-bottom: 4px;
+  }
+  .bot-formatted-content li::before {
+    content: "â€¢";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: bold;
+  }
+
+  /* Animated Typing Indicator */
+  .chat-typing {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+  }
+  .chat-typing span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    animation: chatDot 1.1s ease-in-out infinite;
+  }
+  .chat-typing span:nth-child(2) { animation-delay: 0.18s; }
+  .chat-typing span:nth-child(3) { animation-delay: 0.36s; }
+  @keyframes chatDot {
+    0%, 100% { opacity: 0.3; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-4px); }
+  }
+
+  /* Chat Input Row */
+  .chat-input {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: #FAFAF8;
+  }
+  .chat-input input {
+    flex: 1;
+    font-family: var(--font-body);
+    font-size: 1.02rem;
+    padding: 12px 20px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(0, 0, 0, 0.15);
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .chat-input input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(24, 24, 254, 0.12);
+  }
+  .chat-input button {
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    font-weight: 600;
+    padding: 0 28px;
+    border-radius: 999px;
+    border: none;
+    background: var(--color-accent);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(24, 24, 254, 0.2);
+  }
+  .chat-input button:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(24, 24, 254, 0.3);
+  }
+  .chat-input button:active {
+    transform: translateY(0);
+  }
+
+  /* ============================== FOOTER ============================== */
+  .site-footer {
+    border-top: 1px solid rgba(0,0,0,0.1);
+    background: #fff;
+    padding: 32px 24px;
+    margin-top: 40px;
+  }
+  .site-footer__inner {
+    max-width: 920px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.95rem;
+    color: rgba(0,0,0,0.6);
+  }
+  .site-footer__links {
+    display: flex;
+    gap: 18px;
+  }
+  .site-footer__links a {
+    color: rgba(0,0,0,0.7);
+    font-weight: 500;
+  }
+  .site-footer__links a:hover {
+    color: var(--color-accent);
+  }
+</style>
+</head>
+<body>
+
+<!-- FIXED PILL NAVBAR -->
+<nav class="site-nav">
+  <a href="index.html" class="site-nav__brand">
+    <div class="site-nav__logo">
+      <svg viewBox="0 0 24 24">
+        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+      </svg>
+    </div>
+    <span>IETE-SF</span>
+  </a>
+  <div class="site-nav__menu">
+    <a href="index.html" class="site-nav__link">homepage</a>
+    <a href="events.html" class="site-nav__link">events</a>
+    <a href="team.html" class="site-nav__link">our team</a>
+    <a href="gallery.html" class="site-nav__link">gallery</a>
+    <a href="chat.html" class="site-nav__link is-active">chat w us</a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+  <div id="root"></div>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>Â© 2026â€“27 <strong>IETE-SF MPSTME</strong>. All rights reserved.</div>
+    <div class="site-footer__links">
+      <a href="https://www.instagram.com/iete_mpstme/" target="_blank" rel="noopener">Instagram @iete_mpstme</a>
+      <a href="mailto:iete@mpstme.com">iete@mpstme.com</a>
+      <a href="team.html">Our Team</a>
+    </div>
+  </div>
+</footer>
+
+<!-- REACT & BABEL CDN SCRIPTS -->
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<!-- LOAD KNOWLEDGE BASE & CHAT ENGINE -->
+<script>
+// IETE-SF 2026-27 Complete Knowledge Base
+// Institution of Electronics and Telecommunication Engineers - Students' Forum (MPSTME, SVKM's NMIMS)
+
+const IETE_DATA = {
+  organization: {
+    name: "IETE-SF",
+    fullName: "Institution of Electronics and Telecommunication Engineers - Students' Forum",
+    college: "Mukesh Patel School of Technology Management & Engineering (MPSTME), SVKM's NMIMS, Mumbai",
+    website: "https://ietempstme.com",
+    instagram: "@iete_mpstme",
+    instagramUrl: "https://www.instagram.com/iete_mpstme/",
+    officeHours: "Tuesdays at EEE Lab 2",
+    contactEmail: "iete@mpstme.com",
+    year: "2026-2027"
+  },
+
+  supercore: [
+    { name: "Khushi Choudhary", position: "President", role: "Leads the overall functioning, strategic vision, and operations of IETE-SF." },
+    { name: "Swara Shah", position: "Vice President", role: "Assists the President in steering committee initiatives, cross-department coordination, and execution." },
+    { name: "Neil Shinde", position: "Treasurer", role: "Oversees committee finances, budget allocation, accounts, and sponsorship funding." },
+    { name: "Arham Shaikh", position: "Secretary", role: "Manages official documentation, administrative compliance, communications, and scheduling." },
+    { name: "Akshay Sathaye", position: "Joint Secretary", role: "Supports secretarial operations, records, inter-departmental communications, and event reporting." }
+  ],
+
+  departments: [
+    {
+      id: "admin",
+      name: "Admin Department",
+      fullName: "Admin and Hospitality",
+      aliases: ["admin", "administration", "hospitality", "admin and hospitality", "admin dept"],
+      overview: "Handles overall administrative workflows, hospitality for esteemed guests and judges, campus permissions, and smooth operational groundwork during committee activities.",
+      heads: [
+        {
+          name: "Shivam Gogri",
+          position: "Head",
+          adjectives: ["reliable", "passionate", "calm to the chaos", "rcb fan"],
+          keywords: "reliable, passionate, calm to the chaos, rcb fan"
+        },
+        {
+          name: "Ayush Gandhi",
+          position: "Head",
+          adjectives: ["humble", "hard working", "courageous", "fun loving"],
+          keywords: "humble, hard working, courageous, fun loving"
+        }
+      ],
+      subheads: [
+        {
+          name: "Naitik Jain",
+          position: "Sub-Head",
+          adjectives: ["go-getter", "dependable", "calm under pressure", "hard working"],
+          keywords: "go-getter, dependable, calm under pressure, hard working"
+        },
+        {
+          name: "Rujuta Kolase",
+          position: "Sub-Head",
+          adjectives: ["perceptive", "driven", "loyal", "optimistic", "adaptable"],
+          keywords: "perceptive, driven, loyal, optimistic, adaptable"
+        },
+        {
+          name: "Ishaan Patel",
+          position: "Sub-Head",
+          adjectives: ["ambitious", "curious", "hard working", "persistent", "multifaceted"],
+          keywords: "ambitious, curious, hard working, persistent, multifaceted"
+        },
+        {
+          name: "Riya Kakade",
+          position: "Sub-Head",
+          adjectives: ["calm", "curious", "thoughtful", "observant"],
+          song: "Delilah (pull me out of this) - (0.33 onwards)",
+          keywords: "calm, curious, thoughtful, observant"
+        },
+        {
+          name: "Anandita Rath",
+          position: "Sub-Head",
+          adjectives: ["proven", "juggler", "benevolent", "indomitable", "infuses punjabi flair & vibe"],
+          keywords: "proven, juggler, benevolent, indomitable, infuses punjabi flair & vibe"
+        }
+      ],
+      executives: [
+        "Krishna Kabra", "Akshat Zalani", "Aditya Jain", "Shikha Bari", "Aparajita Singh",
+        "Ipsa Kumar", "Shubhan Mabian", "Shlok Singh", "Falishia Sayed", "Aditya Shinde",
+        "Jeetika Deka", "Aayan Sheikh", "Aryan Parulekar"
+      ]
+    },
+
+    {
+      id: "dc",
+      name: "Digital Creatives (DC)",
+      fullName: "Digital Creatives",
+      aliases: ["dc", "digital creatives", "digital creative", "digital design", "creatives digital"],
+      overview: "Responsible for crafting stunning digital visuals, aesthetic motion graphics, UI/UX designs, social media graphics, posters, and the visual identity of IETE-SF.",
+      heads: [
+        {
+          name: "Brijraj Singh Bhati",
+          position: "Head",
+          adjectives: ["rebel heart", "threesix"],
+          keywords: "rebel heart, threesix"
+        },
+        {
+          name: "Bhavya Vira",
+          position: "Head",
+          adjectives: ["articulate", "steadfast", "decisive", "catalytic"],
+          keywords: "articulate, steadfast, decisive, catalytic"
+        }
+      ],
+      subheads: [
+        {
+          name: "Aala Choudhary",
+          position: "Sub-Head",
+          adjectives: ["passionate", "creative", "chaos in the calm", "driven"],
+          keywords: "passionate, creative, chaos in the calm, driven"
+        },
+        {
+          name: "Harsh Parmar",
+          position: "Sub-Head",
+          adjectives: ["calm"],
+          keywords: "calm"
+        },
+        {
+          name: "Aijaz Shaikh",
+          position: "Sub-Head",
+          adjectives: ["innovative", "tenacious", "trailblazing"],
+          keywords: "innovative, tenacious, trailblazing"
+        },
+        {
+          name: "Krisha Shah",
+          position: "Sub-Head",
+          adjectives: ["creative", "dedicated"],
+          keywords: "creative, dedicated"
+        }
+      ],
+      executives: [
+        "Falak Mehta", "Shipra Lade", "Hriddhima Mehta", "Aarna Shah", "Aditi Baliga",
+        "Saumya Patel", "Shivesh Dube", "Paras Sawla", "Vaidehi Umarale", "Nasya Khan", "Urva Thaker"
+      ]
+    },
+
+    {
+      id: "mktg",
+      name: "Marketing Department (MKTG)",
+      fullName: "Marketing",
+      aliases: ["marketing", "mktg", "marketting", "sponsorship", "marketing department"],
+      overview: "Spearheads corporate outreach, sponsorship acquisitions, brand partnerships, revenue generation, and financial backing for flagship events like ADAPPT and ULECTRO.",
+      heads: [
+        {
+          name: "Dhruv Mane",
+          position: "Head",
+          adjectives: ["fierce", "resilient", "assertive", "tenacious"],
+          keywords: "fierce, resilient, assertive, tenacious"
+        },
+        {
+          name: "Hitarth Vasa",
+          position: "Head",
+          adjectives: ["fearless", "visionary", "a little chaotic, but always committed"],
+          keywords: "fearless, visionary, a little chaotic, but always committed"
+        }
+      ],
+      subheads: [
+        {
+          name: "Parth Shah",
+          position: "Sub-Head",
+          adjectives: ["ambitious", "driven", "creative", "bold", "relentlessly curious"],
+          keywords: "ambitious, driven, creative, bold, relentlessly curious"
+        },
+        {
+          name: "Sahil Chaudhari",
+          position: "Sub-Head",
+          adjectives: ["smart", "reliable", "dynamic", "affectionate", "unhinged"],
+          keywords: "smart, reliable, dynamic, affectionate, unhinged"
+        },
+        {
+          name: "Aarush Rana",
+          position: "Sub-Head",
+          adjectives: ["cool", "calm", "funny", "diligent", "driven"],
+          keywords: "cool, calm, funny, diligent, driven"
+        },
+        {
+          name: "Heer Shethia",
+          position: "Sub-Head",
+          adjectives: ["ambitious", "adaptive", "resolute", "persistent", "compassionate"],
+          keywords: "ambitious, adaptive, resolute, persistent, compassionate"
+        },
+        {
+          name: "Shweny Mamtora",
+          position: "Sub-Head",
+          adjectives: ["audacious", "persistent", "visionary", "dedicated"],
+          song: "paisa (de dana dan)",
+          keywords: "audacious, persistent, visionary, dedicated"
+        }
+      ],
+      executives: [
+        "Nirvaan Ashar", "Darsh Vora", "Ishan Gawde", "Rahil Desai", "Akshat Singh",
+        "Neenv Vaja", "Saee Redij", "Jash Desai", "Ryan Menezes", "Meher Parekh",
+        "Aleeza Shaikh", "Samiksha Baid", "Dhruv Sidhwani"
+      ]
+    },
+
+    {
+      id: "projects",
+      name: "Projects Department",
+      fullName: "Project Team",
+      aliases: ["projects", "project", "project team", "tech team", "technical team", "engineering"],
+      overview: "Develops hardware & software projects, robotics showcases, technical workshops, hackathon problem statements, technical judging, and technological innovations across IETE-SF.",
+      heads: [
+        {
+          name: "Hrishikesh Kunde",
+          position: "Head",
+          adjectives: ["energetic", "perfectionist", "somehow gets it done", "chaotic"],
+          keywords: "energetic, perfectionist, somehow gets it done, chaotic"
+        },
+        {
+          name: "Aarav Mehta",
+          position: "Head",
+          adjectives: ["ambitious", "decisive", "self assured", "passionate", "determined"],
+          keywords: "ambitious, decisive, self assured, passionate, determined"
+        },
+        {
+          name: "Jagjyot Singh",
+          position: "Head",
+          adjectives: ["inventive", "hands-on", "unpredictable", "resourceful", "a bit chaotic"],
+          keywords: "inventive, hands-on, unpredictable, resourceful, a bit chaotic"
+        }
+      ],
+      subheads: [
+        {
+          name: "Sanika Mali",
+          position: "Sub-Head",
+          adjectives: ["intuitive", "precise", "committed", "observant", "considerate"],
+          keywords: "intuitive, precise, committed, observant, considerate"
+        },
+        {
+          name: "Neil Nafrey",
+          position: "Sub-Head",
+          adjectives: ["reliable", "resourceful", "inquisitive", "persistent", "versatile"],
+          song: "Drake: 2 Hard 4 the Radio (0:17 onwards)",
+          keywords: "reliable, resourceful, inquisitive, persistent, versatile"
+        },
+        {
+          name: "Anshuman Semalty",
+          position: "Sub-Head",
+          adjectives: ["persevering", "ambitious", "extremely driven", "visionary"],
+          keywords: "persevering, ambitious, extremely driven, visionary"
+        },
+        {
+          name: "Vihaan Patole",
+          position: "Sub-Head",
+          adjectives: ["passionate", "determined", "reliable", "imaginative", "adaptable"],
+          keywords: "passionate, determined, reliable, imaginative, adaptable"
+        }
+      ],
+      executives: [
+        "Aadit Saini", "Ritika Tekchandani", "Breindel Pereira", "Smriti Tiwari",
+        "Siddhartha Joshi", "Atharv Ambre", "Divit Mathreja", "Aadarsh Kumar"
+      ]
+    },
+
+    {
+      id: "photo",
+      name: "Photography Department",
+      fullName: "Photography",
+      aliases: ["photo", "photography", "photos", "media team", "camera team", "photographers"],
+      overview: "Captures every moment, workshop, festival, and milestone of IETE-SF through professional photography, cinematic aftermovies, recap reels, and event archives.",
+      heads: [
+        {
+          name: "Hitanksh Gala",
+          position: "Head",
+          adjectives: ["passionate", "visionary", "keen eye"],
+          keywords: "passionate, visionary, keen eye"
+        }
+      ],
+      subheads: [
+        {
+          name: "Dripto Bandyopadhyay",
+          position: "Sub-Head",
+          adjectives: ["great eye", "passionate", "committed", "reliable", "driven"],
+          keywords: "great eye, passionate, committed, reliable, driven"
+        },
+        {
+          name: "Sneh Rupapara",
+          position: "Sub-Head",
+          adjectives: ["creative", "persistent", "self directed", "film buff", "performative"],
+          keywords: "creative, persistent, self directed, film buff, performative"
+        },
+        {
+          name: "Chris Alex",
+          position: "Sub-Head",
+          adjectives: ["multi-talented", "ambitious", "calm under pressure", "team player", "keen eye"],
+          song: "made for this shit - gunna (0:56-1:26)",
+          keywords: "multi-talented, ambitious, calm under pressure, team player, keen eye"
+        },
+        {
+          name: "Giriraj Somani",
+          position: "Sub-Head",
+          adjectives: ["committed", "works silently", "little shy", "gets the work done"],
+          keywords: "committed, works silently, little shy, gets the work done"
+        }
+      ],
+      executives: [
+        "Aarush Vaishya", "Dhriti Sheth", "Dhairya Dattani", "Adhyay Patel", "Anaya Sharma",
+        "Rakshith Bagrecha", "Atharv Kadam", "Devaj Kondke", "Aishwarya Joshi", "Rianna Mishra", "Vrutika Chudasama"
+      ]
+    },
+
+    {
+      id: "logistics",
+      name: "Logistics Department",
+      fullName: "Logistics",
+      aliases: ["logistics", "log", "infra", "operations", "inventory", "supply"],
+      overview: "The operational backbone that manages on-ground setups, equipment procurement, venue bookings, stage setups, movement of inventory, and seamless event flow.",
+      heads: [
+        {
+          name: "Mahek Kapahi",
+          position: "Head",
+          adjectives: ["reliable", "problem-solving", "calm", "loyal", "compassionate"],
+          keywords: "reliable, problem-solving, calm, loyal, compassionate"
+        },
+        {
+          name: "Akshansh Chandra",
+          position: "Head",
+          adjectives: ["dedicated", "hardworking", "resourceful"],
+          keywords: "dedicated, hardworking, resourceful"
+        }
+      ],
+      subheads: [
+        {
+          name: "Jessica Wilfred Morris",
+          position: "Sub-Head",
+          adjectives: ["hard working", "ambitious", "energetic", "charming", "silly"],
+          keywords: "hard working, ambitious, energetic, charming, silly"
+        },
+        {
+          name: "Vihaan Doshi",
+          position: "Sub-Head",
+          adjectives: ["confident", "reliable", "passionate", "friendly", "independent", "tenacious"],
+          keywords: "confident, reliable, passionate, friendly, independent, tenacious"
+        },
+        {
+          name: "Sourish Shroff",
+          position: "Sub-Head",
+          adjectives: ["hardworking", "calm", "curious", "introspective", "adaptive"],
+          keywords: "hardworking, calm, curious, introspective, adaptive"
+        },
+        {
+          name: "Hrishi Sharma",
+          position: "Sub-Head",
+          adjectives: ["quick solutions", "hard working", "ambitious", "trustable"],
+          keywords: "quick solutions, hard working, ambitious, trustable"
+        },
+        {
+          name: "Advait Panse",
+          position: "Sub-Head",
+          adjectives: ["hardworking", "reliable", "attentive", "trustworthy"],
+          keywords: "hardworking, reliable, attentive, trustworthy"
+        }
+      ],
+      executives: [
+        "Aarav Verma", "Aarush", "Ansh Tiwari", "Anushka Pawar", "Atharva Pansare",
+        "Deevesh Kaginkar", "Dhruv Malkani", "Khushit Patidar", "Palka Jain",
+        "Shreya Jain", "Soham Vedak", "Vedika Bapat", "Veer Singh", "Vivaan Mutha"
+      ]
+    },
+
+    {
+      id: "informals",
+      name: "Informals Department",
+      fullName: "Informals",
+      aliases: ["informals", "fun", "games", "icebreakers", "entertainment"],
+      overview: "Brings energy and camaraderie to the committee with fun icebreakers, committee bonding retreats, carnival games, stage entertainment, and engaging audience activities.",
+      heads: [
+        {
+          name: "Pratham Ashar",
+          position: "Head",
+          adjectives: ["driven", "funny", "kind", "charming", "energetic"],
+          keywords: "driven, funny, kind, charming, energetic"
+        },
+        {
+          name: "Nihar Bondre",
+          position: "Head",
+          adjectives: ["charismatic", "confident", "disciplined", "driven", "passionate"],
+          keywords: "charismatic, confident, disciplined, driven, passionate"
+        },
+        {
+          name: "Kanishka Anand",
+          position: "Head",
+          adjectives: ["ambitious", "persistent", "creative", "proactive", "energetic", "driven"],
+          keywords: "ambitious, persistent, creative, proactive, energetic, driven"
+        }
+      ],
+      subheads: [
+        {
+          name: "Neerav Gade",
+          position: "Sub-Head",
+          adjectives: ["unfiltered", "comic", "ambitious", "quirky", "social"],
+          keywords: "unfiltered, comic, ambitious, quirky, social"
+        },
+        {
+          name: "Sarang Bhosle",
+          position: "Sub-Head",
+          adjectives: ["fun", "empathetic", "ambitious", "visionary"],
+          keywords: "fun, empathetic, ambitious, visionary"
+        },
+        {
+          name: "Dev Joshi",
+          position: "Sub-Head",
+          adjectives: ["sociable", "chaotic", "outgoing", "unpredictable"],
+          song: "Never recover - Drake",
+          keywords: "sociable, chaotic, outgoing, unpredictable"
+        },
+        {
+          name: "Sourish Sinha",
+          position: "Sub-Head",
+          adjectives: ["responsible", "reliable", "passionate", "strategic", "calm", "resilient"],
+          keywords: "responsible, reliable, passionate, strategic, calm, resilient"
+        }
+      ],
+      executives: [
+        "Manan Nagda", "Chaitanya Alle", "Naina Choudary", "Ranveer Punjabi", "Aarav Agrawal",
+        "Rachit Nysse", "Sushant Gurbaxani", "Mohil Gosar", "Vedika Kalia", "Yash Goel"
+      ]
+    },
+
+    {
+      id: "em",
+      name: "Event Management (EM)",
+      fullName: "External Management / Event Management",
+      aliases: ["em", "event management", "events", "external management", "event mgmt"],
+      overview: "Orchestrates event scheduling, crowd control, auditorium choreography, registrations, speaker coordination, and on-the-day stage timeline management.",
+      heads: [
+        {
+          name: "Kavya Vasa",
+          position: "Head",
+          adjectives: ["strategic", "collaborative", "steadfast", "proactive", "level-headed"],
+          keywords: "strategic, collaborative, steadfast, proactive, level-headed"
+        },
+        {
+          name: "Yohaan Wadia",
+          position: "Head",
+          adjectives: ["entertaining", "reliable", "empathetic", "decisive", "inspiring"],
+          keywords: "entertaining, reliable, empathetic, decisive, inspiring"
+        }
+      ],
+      subheads: [
+        {
+          name: "Sakshi Mehta",
+          position: "Sub-Head",
+          adjectives: ["vivacious", "confident", "visionary", "understanding", "hardworking"],
+          keywords: "vivacious, confident, visionary, understanding, hardworking"
+        },
+        {
+          name: "Srushti Bhosale",
+          position: "Sub-Head",
+          adjectives: ["ambitious", "curious", "adventurous", "determined", "chaotic"],
+          keywords: "ambitious, curious, adventurous, determined, chaotic"
+        },
+        {
+          name: "Renee Punamiya",
+          position: "Sub-Head",
+          adjectives: ["dedicated", "productive", "fun", "resourceful", "resilient"],
+          song: "Do I Wanna Know - Arctic Monkeys Intro(00:05 onwards)",
+          keywords: "dedicated, productive, fun, resourceful, resilient"
+        },
+        {
+          name: "Dhruv Rathod",
+          position: "Sub-Head",
+          adjectives: ["reliable", "organized", "diligent"],
+          keywords: "reliable, organized, diligent"
+        },
+        {
+          name: "Krish Shah",
+          position: "Sub-Head",
+          adjectives: ["ambitious", "charismatic", "perfectionist", "resourceful", "relentless"],
+          keywords: "ambitious, charismatic, perfectionist, resourceful, relentless"
+        }
+      ],
+      executives: [
+        "Om Sanap", "Neev Jain", "Sanvi", "Ansh", "Honey", "Advitha",
+        "Samiksh", "Priyanshu Chand", "Dhruv", "Akshat", "Avnee Masurkar"
+      ]
+    },
+
+    {
+      id: "smcw",
+      name: "SMCW Department",
+      fullName: "Social Media and Content Writing",
+      aliases: ["smcw", "social media", "content writing", "content", "copywriting", "social media & content writing"],
+      overview: "Crafts compelling captions, newsletter articles, event scripts, official press releases, and drives engagement across all official digital handles.",
+      heads: [
+        {
+          name: "Vivaan Jasapara",
+          position: "Head",
+          adjectives: ["visionary", "creative", "driven"],
+          keywords: "visionary, creative, driven"
+        },
+        {
+          name: "Nyssa Nuhaa",
+          position: "Head",
+          adjectives: ["eloquent", "strategic", "dedicated"],
+          keywords: "eloquent, strategic, dedicated"
+        }
+      ],
+      subheads: [
+        {
+          name: "Anoushka Redkar",
+          position: "Sub-Head",
+          adjectives: ["ambitious", "creative", "passionate", "committed", "hardworking"],
+          song: "B's on the table",
+          keywords: "ambitious, creative, passionate, committed, hardworking"
+        },
+        {
+          name: "Ved Kalwar",
+          position: "Sub-Head",
+          adjectives: ["resourceful", "focused"],
+          keywords: "resourceful, focused"
+        },
+        {
+          name: "Smit Dalvi",
+          position: "Sub-Head",
+          adjectives: ["curious", "reliable"],
+          keywords: "curious, reliable"
+        },
+        {
+          name: "Haya Pathak",
+          position: "Sub-Head",
+          adjectives: ["expressive", "diligent"],
+          keywords: "expressive, diligent"
+        }
+      ],
+      executives: [
+        "Adwita Mishra", "Nehal Surve", "Manav Mehta", "Harshita Thakare", "Dhyani Shah",
+        "Raina Advirkar", "Benafsha Singporewala", "Arnay Joshi", "Shabbirali Virani"
+      ]
+    },
+
+    {
+      id: "publicity",
+      name: "Publicity Department",
+      fullName: "Publicity",
+      aliases: ["publicity", "pub", "promotions", "pr", "outreach", "campaigns"],
+      overview: "Executes hype campaigns, classroom blitzes, on-campus publicity drives, word-of-mouth promotion, and ensures high participant turnout at all events.",
+      heads: [
+        {
+          name: "Arushi Dube",
+          position: "Head",
+          adjectives: ["ambitious", "witty", "bold", "passionate", "driven", "sunshine", "hardworking"],
+          keywords: "ambitious, witty, bold, passionate, driven, sunshine, hardworking"
+        },
+        {
+          name: "Arnab Mukhopadhyay",
+          position: "Head",
+          adjectives: ["leader", "eloquent", "smart worker", "practical", "solution-oriented"],
+          keywords: "leader, eloquent, smart worker, practical, solution-oriented"
+        }
+      ],
+      subheads: [
+        {
+          name: "Aananya Banerjee",
+          position: "Sub-Head",
+          adjectives: ["candid", "driven", "fiery", "ambitious", "creative/artsy"],
+          keywords: "candid, driven, fiery, ambitious, creative/artsy"
+        },
+        {
+          name: "Aryan Mishra",
+          position: "Sub-Head",
+          adjectives: ["bold", "ambitious", "optimistic", "insightful", "diligent", "runner"],
+          song: "Winning speech - Karan Aujla (0:12-0:30)",
+          keywords: "bold, ambitious, optimistic, insightful, diligent, runner"
+        },
+        {
+          name: "Shlok Vasandani",
+          position: "Sub-Head",
+          adjectives: ["relentless", "restless", "curious", "resourceful", "unconventional"],
+          keywords: "relentless, restless, curious, resourceful, unconventional"
+        },
+        {
+          name: "Aayushka Brid",
+          position: "Sub-Head",
+          adjectives: ["earnest", "reliable", "cheerful", "approachable", "diligent"],
+          keywords: "earnest, reliable, cheerful, approachable, diligent"
+        },
+        {
+          name: "Reuben Valluppara",
+          position: "Sub-Head",
+          adjectives: ["reliable", "confident", "ambitious", "hardworking", "team player"],
+          keywords: "reliable, confident, ambitious, hardworking, team player"
+        }
+      ],
+      executives: [
+        "Aleeza Mallick", "Atharav Ahuja", "Aadarsh", "Ayaan Raza", "Harikesh Jha",
+        "Paarth", "Saanvi", "Navya Sinha", "Mokshaa", "Rianna Mishra", "Shaunak", "Srishti Baid", "Sara"
+      ]
+    },
+
+    {
+      id: "rnd",
+      name: "Research and Development (R&D)",
+      fullName: "Research and Development",
+      aliases: ["r and d", "rnd", "r&d", "research and development", "research & development", "r & d"],
+      overview: "Pioneers cutting-edge research, tech whitepapers, curriculum innovation, state-of-the-art hackathon problem tracks, and experimental technologies.",
+      heads: [
+        {
+          name: "Shlok Dharani",
+          position: "Head",
+          adjectives: ["decisive", "analytical", "bold", "visionary", "driven"],
+          keywords: "decisive, analytical, bold, visionary, driven"
+        },
+        {
+          name: "Mahek Busa",
+          position: "Head",
+          adjectives: ["creative", "passionate", "perfectionist", "ambitious", "enthusiast"],
+          song: "ATM - Don Toliver (0:20 onwards)",
+          keywords: "creative, passionate, perfectionist, ambitious, enthusiast"
+        }
+      ],
+      subheads: [
+        {
+          name: "Saachi Jain",
+          position: "Sub-Head",
+          adjectives: ["ambitious", "creative", "curious", "determined"],
+          keywords: "ambitious, creative, curious, determined"
+        },
+        {
+          name: "Neev Churi",
+          position: "Sub-Head",
+          adjectives: ["dedicated", "creative", "curious", "resourceful"],
+          keywords: "dedicated, creative, curious, resourceful"
+        },
+        {
+          name: "Kathan Dodia",
+          position: "Sub-Head",
+          adjectives: ["resilient", "ambitious", "adaptable", "clutch when it counts"],
+          keywords: "resilient, ambitious, adaptable, clutch when it counts"
+        },
+        {
+          name: "Dhruv Shah",
+          position: "Sub-Head",
+          adjectives: ["curious", "eager", "reliable", "committed", "focused"],
+          keywords: "curious, eager, reliable, committed, focused"
+        }
+      ],
+      executives: [
+        "Devesh Dube", "Arjun Mukhija", "Anmoli Kamath", "Aaron Mendonca",
+        "Reeni Savla", "Jiya Jain", "Aadhit Kotian", "Aradhya Sawant", "Arjun Raut"
+      ]
+    },
+
+    {
+      id: "agm",
+      name: "AGM Department",
+      fullName: "Artist and Guest Management",
+      aliases: ["agm", "artist and guest management", "guest management", "artist management", "celebrity management"],
+      overview: "Manages celebrity invitations, keynote speaker liaisons, VIP hospitality, artist riders, and high-profile networking for college conclaves and fests.",
+      heads: [
+        {
+          name: "Tanush Khetan",
+          position: "Head",
+          adjectives: ["wise", "charismatic", "straightforward", "driven", "leader", "fearless", "fun loving"],
+          keywords: "wise, charismatic, straightforward, driven, leader, fearless, fun loving"
+        },
+        {
+          name: "Akshit Makwana",
+          position: "Head",
+          adjectives: ["niche", "cool", "feminist", "performative"],
+          keywords: "niche, cool, feminist, performative"
+        }
+      ],
+      subheads: [
+        {
+          name: "Heer Sanghavi",
+          position: "Sub-Head",
+          adjectives: ["adaptable", "ambitious", "curious", "collaborative", "driven"],
+          song: "watch this - lil uzi vert (0:27 onwards)",
+          keywords: "adaptable, ambitious, curious, collaborative, driven"
+        },
+        {
+          name: "Swastik Kar",
+          position: "Sub-Head",
+          adjectives: ["witty", "playful", "persuasive", "clutch when it counts", "celebrity outreach"],
+          keywords: "witty, playful, persuasive, clutch when it counts, celebrity outreach"
+        },
+        {
+          name: "Jiah Bohra",
+          position: "Sub-Head",
+          adjectives: ["visionary", "spontaneous", "approachable", "organised chaos"],
+          keywords: "visionary, spontaneous, approachable, organised chaos"
+        },
+        {
+          name: "Yatharth Vora",
+          position: "Sub-Head",
+          adjectives: ["calm", "confident", "versatile", "natural leader"],
+          keywords: "calm, confident, versatile, natural leader"
+        }
+      ],
+      executives: [
+        "Sharvin Mandrekar", "Mihika Chadha", "Sanvi Patkar", "Kabir R. Randhe",
+        "Ahon Biswas", "Laasya Shetty", "Likhith Shetty", "Reyansh Rohira"
+      ]
+    },
+
+    {
+      id: "ihc",
+      name: "IHC Department",
+      fullName: "In House Creatives",
+      aliases: ["ihc", "in house creatives", "inhouse creatives", "in house creative", "physical creatives", "decor"],
+      overview: "Creates awe-inspiring physical installations, stage backdrops, entrance arches, handcrafted aesthetic themes, photo booths, and event decor.",
+      heads: [
+        {
+          name: "Sharanya Sandansingh",
+          position: "Head",
+          adjectives: ["pragmatic", "visionary", "unfiltered", "adaptable", "candid"],
+          song: "The less i know the better",
+          keywords: "pragmatic, visionary, unfiltered, adaptable, candid"
+        },
+        {
+          name: "Prisha Jain",
+          position: "Head",
+          adjectives: ["confident", "determined", "leadership", "helpful"],
+          keywords: "confident, determined, leadership, helpful"
+        }
+      ],
+      subheads: [
+        {
+          name: "Jaynesh Kapoor",
+          position: "Sub-Head",
+          adjectives: ["visionary", "relentless", "meticulous", "fearless", "driven"],
+          keywords: "visionary, relentless, meticulous, fearless, driven"
+        },
+        {
+          name: "Jia Shah",
+          position: "Sub-Head",
+          adjectives: ["creative", "goofy", "hardworking", "dependable", "energetic"],
+          keywords: "creative, goofy, hardworking, dependable, energetic"
+        },
+        {
+          name: "Zahid Shaikh",
+          position: "Sub-Head",
+          adjectives: ["chaotic", "determined", "jolly", "sharp", "creative"],
+          keywords: "chaotic, determined, jolly, sharp, creative"
+        },
+        {
+          name: "Naysa Varghese",
+          position: "Sub-Head",
+          adjectives: ["reliable", "detail-oriented", "artistic", "dedicated"],
+          keywords: "reliable, detail-oriented, artistic, dedicated"
+        }
+      ],
+      executives: [
+        "Abantika Nandi", "Anushka Mandlik", "Arham Shah", "Jigyasa Parmar", "Meera Anil Mhatre",
+        "Nysa Susan Roshan", "Saee Varpe", "Shourya Agrawal", "Tanishka Mandlik",
+        "Vacha Maniar", "Vinisha Bhanushali", "Vishakha Uttam Mane"
+      ]
+    }
+  ],
+
+  events: [
+    {
+      name: "DigiHunt 2026",
+      tagline: "Annual Flagship Tech Hunt & Hackathon",
+      date: "October 18, 2026",
+      time: "9:00 AM onwards",
+      venue: "Main Auditorium, MPSTME",
+      description: "A fast-paced technical puzzle hunt and problem-solving hackathon combining cryptic clues, coding challenges, and hardware quests."
+    },
+    {
+      name: "ADAPPT 5.0",
+      tagline: "Flagship Hackathon & Tech Summit",
+      description: "Annual multi-track hackathon bringing students together to innovate, prototype, and build solutions across AI, IoT, Web3, and sustainability."
+    },
+    {
+      name: "ULECTRO 26",
+      tagline: "Electronics & Tech Symposium",
+      description: "High-voltage electronics symposium featuring hardware design contests, circuit debugging battles, robotics showcases, and keynote talks."
+    }
+  ],
+
+  faqs: [
+    {
+      keywords: ["join", "joining", "how to join", "how do i join", "how can i join", "recruitment", "induction", "apply", "become a member"],
+      question: "How do I join IETE-SF?",
+      answer: "You can join IETE-SF by filling out the recruitment form linked on our Events / Homepage during the annual induction window each August! There is no intimidating formal interviewâ€”just an intro form and an enthusiasm check."
+    },
+    {
+      keywords: ["next hackathon", "hackathon", "when is hackathon", "digihunt"],
+      question: "When is the next hackathon?",
+      answer: "Our flagship event **DigiHunt 2026** runs on **October 18, 2026**, starting at **9:00 AM** in the **Main Auditorium, MPSTME**. Keep an eye on our Instagram [@iete_mpstme](https://www.instagram.com/iete_mpstme/) for announcements!"
+    },
+    {
+      keywords: ["membership fee", "fee", "cost", "is it free", "charges", "price"],
+      question: "Is there a membership fee?",
+      answer: "No, membership in IETE-SF is **100% free** for all registered MPSTME students! Some flagship hackathons or workshops may have a nominal materials or registration fee."
+    },
+    {
+      keywords: ["contact", "email", "reach out", "office", "lab", "where to find"],
+      question: "How do I contact the team?",
+      answer: "You can reach us directly via email at **iete@mpstme.com**, visit our office hours on **Tuesdays at EEE Lab 2**, or DM us on Instagram at **[@iete_mpstme](https://www.instagram.com/iete_mpstme/)**."
+    },
+    {
+      keywords: ["instagram", "insta", "social media", "handle"],
+      question: "What is your Instagram handle?",
+      answer: "Our official Instagram handle is **[@iete_mpstme](https://www.instagram.com/iete_mpstme/)**. Follow us for live event updates, committee reveals, memes, and workshop alerts!"
+    },
+    {
+      keywords: ["supercore", "president", "core committee", "vice president", "treasurer", "secretary"],
+      question: "Who is in the SuperCore of IETE-SF?",
+      answer: "The **SuperCore (2026â€“27)** consists of:\nâ€¢ **President**: Khushi Choudhary\nâ€¢ **Vice President**: Swara Shah\nâ€¢ **Treasurer**: Neil Shinde\nâ€¢ **Secretary**: Arham Shaikh\nâ€¢ **Joint Secretary**: Akshay Sathaye"
+    }
+  ]
+};
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = IETE_DATA;
+}
+if (typeof window !== 'undefined') {
+  window.IETE_DATA = IETE_DATA;
+}
+
+</script>
+<script>
+// IETE-SF Chatbot Query Processing Engine
+// Handles natural language understanding, keyword matching, intent classification, and formatted response generation.
+
+(function () {
+  const isNode = typeof module !== 'undefined' && module.exports;
+  const IETE_DATA = isNode ? require('../data/iete-data.js') : window.IETE_DATA;
+
+  // Flattened member lookup index
+  const memberIndex = [];
+  const keywordIndex = [];
+  const songIndex = [];
+
+  function buildIndices() {
+    // Supercore
+    IETE_DATA.supercore.forEach(member => {
+      memberIndex.push({
+        name: member.name,
+        nameLower: member.name.toLowerCase(),
+        position: member.position,
+        department: "SuperCore",
+        role: member.role,
+        isSupercore: true
+      });
+    });
+
+    // Departments
+    IETE_DATA.departments.forEach(dept => {
+      // Heads
+      dept.heads.forEach(head => {
+        const item = {
+          name: head.name,
+          nameLower: head.name.toLowerCase(),
+          position: "Head",
+          department: dept.name,
+          deptId: dept.id,
+          adjectives: head.adjectives || [],
+          keywords: head.keywords || "",
+          song: head.song || null
+        };
+        memberIndex.push(item);
+
+        if (head.keywords) {
+          keywordIndex.push({
+            name: head.name,
+            position: "Head",
+            department: dept.name,
+            keywords: head.keywords.toLowerCase()
+          });
+        }
+        if (head.song) {
+          songIndex.push({
+            name: head.name,
+            position: "Head",
+            department: dept.name,
+            song: head.song
+          });
+        }
+      });
+
+      // Subheads
+      dept.subheads.forEach(sub => {
+        const item = {
+          name: sub.name,
+          nameLower: sub.name.toLowerCase(),
+          position: "Sub-Head",
+          department: dept.name,
+          deptId: dept.id,
+          adjectives: sub.adjectives || [],
+          keywords: sub.keywords || "",
+          song: sub.song || null
+        };
+        memberIndex.push(item);
+
+        if (sub.keywords) {
+          keywordIndex.push({
+            name: sub.name,
+            position: "Sub-Head",
+            department: dept.name,
+            keywords: sub.keywords.toLowerCase()
+          });
+        }
+        if (sub.song) {
+          songIndex.push({
+            name: sub.name,
+            position: "Sub-Head",
+            department: dept.name,
+            song: sub.song
+          });
+        }
+      });
+
+      // Executives
+      dept.executives.forEach(exec => {
+        memberIndex.push({
+          name: exec,
+          nameLower: exec.toLowerCase(),
+          position: "Executive",
+          department: dept.name,
+          deptId: dept.id
+        });
+      });
+    });
+  }
+
+  buildIndices();
+
+  // Helper to match department from query string
+  function findDepartment(queryLower) {
+    for (const dept of IETE_DATA.departments) {
+      for (const alias of dept.aliases) {
+        // Regex word boundary or exact match
+        const regex = new RegExp(`(^|\\b|\\s)${escapeRegex(alias)}(\\b|\\s|$)`, 'i');
+        if (regex.test(queryLower)) {
+          return dept;
+        }
+      }
+    }
+    return null;
+  }
+
+  function escapeRegex(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  // NLP Query Processor
+  function processQuery(rawQuery) {
+    if (!rawQuery || typeof rawQuery !== 'string') {
+      return "Please enter a question about IETE-SF, our departments, heads, or events!";
+    }
+
+    const q = rawQuery.trim();
+    const qLower = q.toLowerCase().replace(/['"?!,.]/g, ' ').replace(/\s+/g, ' ').trim();
+
+    // 1. Greetings & Meta
+    if (/^(hi|hello|hey|yo|namaste|good morning|good afternoon|good evening|sup|howdy)\b/i.test(qLower) && qLower.split(' ').length <= 3) {
+      return `Hey there! ðŸ‘‹ Welcome to **IETE-SF (2026â€“27)**!\n\nI can help you with:\nâ€¢ **Department Heads & Sub-Heads** (e.g. *"who is the head of r and d?"*)\nâ€¢ **Team Members & Executives** (e.g. *"who is Siddhartha Joshi?"*)\nâ€¢ **Vibes & Traits** (e.g. *"who is the rcb fan?"* or *"who has rebel heart?"*)\nâ€¢ **Department Post Songs** (e.g. *"who chose Don Toliver?"*)\nâ€¢ **Events & Recruitment** (e.g. *"when is the next hackathon?"* or *"how do I join?"*)\n\nWhat would you like to know?`;
+    }
+
+    if (/^(help|commands|what can you do|features|options)\b/i.test(qLower)) {
+      return `Here are some things you can ask me:\n\n1. **Department Info**: *"Who is the head of R&D?"*, *"List subheads of Projects"*, *"Who are the executives in Admin?"*\n2. **People Lookup**: *"Who is Shivam Gogri?"*, *"Tell me about Mahek Busa"*, *"Who is the President?"*\n3. **Keywords & Vibes**: *"Who is the RCB fan?"*, *"Who is clutch when it counts?"*, *"Who has Punjabi flair?"*\n4. **Song Choices**: *"Who picked Drake?"*, *"What song did Renee choose?"*\n5. **Committee & Events**: *"How do I join?"*, *"When is DigiHunt?"*, *"What is your Instagram handle?"*`;
+    }
+
+    // 2. SuperCore query (President, VP, Treasurer, Secretary, Joint Secretary)
+    if (/\b(president|vice president|treasurer|secretary|joint secretary|supercore|super core)\b/i.test(qLower)) {
+      if (/\bpresident\b/i.test(qLower) && !/vice/i.test(qLower)) {
+        const pres = IETE_DATA.supercore.find(m => m.position === "President");
+        return `ðŸ‘‘ **President of IETE-SF (2026â€“27)**:\n**${pres.name}**\n\n*${pres.role}*`;
+      }
+      if (/\b(vice president|vp)\b/i.test(qLower)) {
+        const vp = IETE_DATA.supercore.find(m => m.position === "Vice President");
+        return `ðŸŒŸ **Vice President of IETE-SF (2026â€“27)**:\n**${vp.name}**\n\n*${vp.role}*`;
+      }
+      if (/\btreasurer\b/i.test(qLower)) {
+        const tr = IETE_DATA.supercore.find(m => m.position === "Treasurer");
+        return `ðŸ’¼ **Treasurer of IETE-SF (2026â€“27)**:\n**${tr.name}**\n\n*${tr.role}*`;
+      }
+      if (/\bjoint secretary\b/i.test(qLower)) {
+        const js = IETE_DATA.supercore.find(m => m.position === "Joint Secretary");
+        return `ðŸ“ **Joint Secretary of IETE-SF (2026â€“27)**:\n**${js.name}**\n\n*${js.role}*`;
+      }
+      if (/\bsecretary\b/i.test(qLower)) {
+        const sec = IETE_DATA.supercore.find(m => m.position === "Secretary");
+        return `ðŸ“‹ **Secretary of IETE-SF (2026â€“27)**:\n**${sec.name}**\n\n*${sec.role}*`;
+      }
+      if (/\b(supercore|super core)\b/i.test(qLower)) {
+        let res = `ðŸ›ï¸ **IETE-SF SuperCore (2026â€“27)**:\n\n`;
+        IETE_DATA.supercore.forEach(m => {
+          res += `â€¢ **${m.position}**: ${m.name}\n`;
+        });
+        return res;
+      }
+    }
+
+    // 3. Specific Person Name Search
+    // Check if user is asking about an individual
+    const personMatch = searchPerson(qLower);
+    if (personMatch) {
+      return formatPersonResponse(personMatch);
+    }
+
+    // 4. Department Queries
+    const dept = findDepartment(qLower);
+    if (dept) {
+      // Check if asking specifically for HEADS
+      if (/\b(head|heads|lead|leads|leader|leaders|chair|heading)\b/i.test(qLower) && !/\bsub\b/i.test(qLower)) {
+        let res = `ðŸŽ–ï¸ **Heads of ${dept.name}**:\n\n`;
+        dept.heads.forEach((h, idx) => {
+          res += `${idx + 1}. **${h.name}**\n`;
+          if (h.keywords) res += `   *Keywords / Vibe*: ${h.keywords}\n`;
+          if (h.song) res += `   *Dept Post Song*: ðŸŽµ ${h.song}\n`;
+        });
+        return res;
+      }
+
+      // Check if asking specifically for SUB-HEADS
+      if (/\b(subhead|subheads|sub head|sub heads|sub-head|sub-heads|co-head|co-heads|junior head)\b/i.test(qLower)) {
+        let res = `â­ **Sub-Heads of ${dept.name}**:\n\n`;
+        dept.subheads.forEach((s, idx) => {
+          res += `${idx + 1}. **${s.name}**\n`;
+          if (s.keywords) res += `   *Keywords / Vibe*: ${s.keywords}\n`;
+          if (s.song) res += `   *Dept Post Song*: ðŸŽµ ${s.song}\n`;
+        });
+        return res;
+      }
+
+      // Check if asking specifically for EXECUTIVES
+      if (/\b(executive|executives|exec|execs|members|juniors|freshers)\b/i.test(qLower)) {
+        let res = `ðŸ‘¥ **Executives of ${dept.name}** (${dept.executives.length} members):\n\n`;
+        dept.executives.forEach((e, idx) => {
+          res += `${idx + 1}. ${e}\n`;
+        });
+        return res;
+      }
+
+      // General department summary
+      let res = `ðŸ¢ **${dept.name}** (${dept.fullName})\n\n`;
+      res += `${dept.overview}\n\n`;
+      res += `**Heads**:\n` + dept.heads.map(h => `â€¢ **${h.name}** (${h.keywords || 'Leading the department'})`).join('\n') + `\n\n`;
+      res += `**Sub-Heads**:\n` + dept.subheads.map(s => `â€¢ **${s.name}**`).join('\n') + `\n\n`;
+      res += `**Executives**: ${dept.executives.length} team members. *(Ask "executives in ${dept.aliases[0]}" to list all)*`;
+      return res;
+    }
+
+    // 5. Trait / Adjective / Keyword Search
+    const traitResult = searchByKeyword(qLower);
+    if (traitResult) {
+      return traitResult;
+    }
+
+    // 6. Song Choice Search
+    const songResult = searchBySong(qLower);
+    if (songResult) {
+      return songResult;
+    }
+
+    // 7. General FAQs (Joining, Events, Hackathon, Instagram, Fees, Office)
+    for (const faq of IETE_DATA.faqs) {
+      for (const kw of faq.keywords) {
+        if (qLower.includes(kw)) {
+          return faq.answer;
+        }
+      }
+    }
+
+    // 8. General Events query
+    if (/\b(events|flagship events|hackathons|ulectro|adappt|digihunt)\b/i.test(qLower)) {
+      let res = `ðŸš€ **Flagship Events of IETE-SF**:\n\n`;
+      IETE_DATA.events.forEach(e => {
+        res += `â€¢ **${e.name}**: ${e.tagline}\n  ${e.description}\n`;
+        if (e.date) res += `  ðŸ—“ï¸ *Date*: ${e.date} (${e.venue || 'MPSTME'})\n`;
+        res += `\n`;
+      });
+      return res;
+    }
+
+    // 9. Department list query
+    if (/\b(departments|all departments|list departments|how many departments)\b/i.test(qLower)) {
+      let res = `ðŸ›ï¸ **IETE-SF has 13 Active Departments**:\n\n`;
+      IETE_DATA.departments.forEach((d, idx) => {
+        res += `${idx + 1}. **${d.name}** â€” ${d.heads.map(h => h.name).join(', ')} (Heads)\n`;
+      });
+      res += `\nFeel free to ask for heads, subheads, or executives of any department!`;
+      return res;
+    }
+
+    // 10. Fallback with intelligent suggestions
+    return `I couldn't quite find an exact match for that! ðŸ¤”\n\nHere are some things you can ask me:\nâ€¢ *"Who is the head of R&D?"*\nâ€¢ *"Who are the heads of Projects?"*\nâ€¢ *"List executives in Marketing"*\nâ€¢ *"Who is the RCB fan?"*\nâ€¢ *"Who chose Drake?"*\nâ€¢ *"When is the next hackathon?"*\n\nOr DM us on Instagram at **[@iete_mpstme](https://www.instagram.com/iete_mpstme/)**!`;
+  }
+
+  // Search for person by name
+  function searchPerson(qLower) {
+    // Try matching full name first
+    for (const m of memberIndex) {
+      if (qLower.includes(m.nameLower)) {
+        return m;
+      }
+    }
+
+    // Try tokens / first name or last name if query is looking for a person
+    if (/\b(who is|tell me about|profile of|info on|who s)\b/i.test(qLower)) {
+      const cleanQ = qLower.replace(/\b(who is|tell me about|profile of|info on|who s|the)\b/gi, '').trim();
+      if (cleanQ.length >= 3) {
+        // Direct match against member names
+        for (const m of memberIndex) {
+          const parts = m.nameLower.split(' ');
+          if (parts.some(p => p.length >= 3 && cleanQ.includes(p))) {
+            return m;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function formatPersonResponse(person) {
+    let res = `ðŸ‘¤ **${person.name}**\n\n`;
+    res += `â€¢ **Position**: ${person.position}\n`;
+    res += `â€¢ **Department**: ${person.department}\n`;
+
+    if (person.role) {
+      res += `â€¢ **Role**: ${person.role}\n`;
+    }
+    if (person.keywords) {
+      res += `â€¢ **Keywords / Vibe**: ${person.keywords}\n`;
+    }
+    if (person.song) {
+      res += `â€¢ **Dept Post Song**: ðŸŽµ ${person.song}\n`;
+    }
+    return res;
+  }
+
+  // Search by personality trait / keyword
+  function searchByKeyword(qLower) {
+    const traitQueries = [
+      { key: "rcb", label: "RCB Fan" },
+      { key: "rebel heart", label: "Rebel Heart" },
+      { key: "threesix", label: "threesix" },
+      { key: "punjabi flair", label: "Punjabi flair & vibe" },
+      { key: "unhinged", label: "unhinged" },
+      { key: "clutch when it counts", label: "clutch when it counts" },
+      { key: "calm to the chaos", label: "calm to the chaos" },
+      { key: "somehow gets it done", label: "somehow gets it done" },
+      { key: "perfectionist", label: "perfectionist" },
+      { key: "film buff", label: "film buff" },
+      { key: "celebrity outreach", label: "celebrity outreach" },
+      { key: "feminist", label: "feminist" },
+      { key: "natural leader", label: "natural leader" },
+      { key: "delilah", label: "Delilah" },
+      { key: "keen eye", label: "keen eye" },
+      { key: "sunshine", label: "sunshine" },
+      { key: "chaotic", label: "chaotic" }
+    ];
+
+    for (const t of traitQueries) {
+      if (qLower.includes(t.key)) {
+        const matches = keywordIndex.filter(k => k.keywords.includes(t.key));
+        if (matches.length > 0) {
+          let res = `âœ¨ **Members associated with "${t.label}"**:\n\n`;
+          matches.forEach(m => {
+            res += `â€¢ **${m.name}** â€” ${m.position}, ${m.department}\n  *Traits*: "${m.keywords}"\n`;
+          });
+          return res;
+        }
+      }
+    }
+    return null;
+  }
+
+  // Search by song or artist
+  function searchBySong(qLower) {
+    const artists = [
+      { artist: "don toliver", songName: "ATM" },
+      { artist: "arctic monkeys", songName: "Do I Wanna Know" },
+      { artist: "drake", songName: "2 Hard 4 the Radio / Never Recover" },
+      { artist: "gunna", songName: "made for this shit" },
+      { artist: "karan aujla", songName: "Winning speech" },
+      { artist: "lil uzi vert", songName: "watch this" },
+      { artist: "tame impala", songName: "The less i know the better" },
+      { artist: "delilah", songName: "Delilah (pull me out of this)" },
+      { artist: "paisa", songName: "paisa (de dana dan)" },
+      { artist: "b's on the table", songName: "B's on the table" }
+    ];
+
+    for (const a of artists) {
+      if (qLower.includes(a.artist) || qLower.includes(a.songName.toLowerCase())) {
+        const matches = songIndex.filter(s =>
+          s.song.toLowerCase().includes(a.artist) ||
+          s.song.toLowerCase().includes(a.songName.toLowerCase()) ||
+          (a.artist === "tame impala" && s.song.toLowerCase().includes("less i know"))
+        );
+        if (matches.length > 0) {
+          let res = `ðŸŽµ **Dept Post Song choice matching "${a.artist}"**:\n\n`;
+          matches.forEach(m => {
+            res += `â€¢ **${m.name}** (${m.position}, ${m.department})\n  Track: *${m.song}*\n`;
+          });
+          return res;
+        }
+      }
+    }
+    return null;
+  }
+
+  const ChatbotEngine = {
+    processQuery,
+    IETE_DATA,
+    memberIndex
+  };
+
+  if (isNode) {
+    module.exports = ChatbotEngine;
+  }
+  if (typeof window !== 'undefined') {
+    window.ChatbotEngine = ChatbotEngine;
+  }
+})();
+
+</script>
+
+<!-- REACT CHAT APPLICATION -->
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const PROMPT_CHIPS = [
+  "who is the head of r and d",
+  "How do I join?",
+  "When is the next hackathon?",
+  "Who are the heads of Projects?",
+  "Who is the RCB fan?",
+  "Who chose Don Toliver?",
+  "Is there a membership fee?",
+  "How do I contact the team?"
+];
+
+// Helper to format bot responses with simple markdown (bold, links, newlines, bullets)
+function formatMessage(text) {
+  if (!text) return null;
+  const lines = text.split('\n');
+
+  return (
+    <div className="bot-formatted-content">
+      {lines.map((line, idx) => {
+        if (!line.trim()) {
+          return <div key={idx} style={{ height: '6px' }} />;
+        }
+
+        // Bullet point
+        const isBullet = line.trim().startsWith('â€¢') || line.trim().startsWith('* ') || line.trim().startsWith('- ');
+        const cleanLine = isBullet ? line.trim().replace(/^[â€¢*-]\s*/, '') : line;
+
+        // Parse bold **text** and [link](url)
+        const parts = [];
+        let cursor = 0;
+        const regex = /(\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)]+)\))/g;
+        let match;
+
+        while ((match = regex.exec(cleanLine)) !== null) {
+          if (match.index > cursor) {
+            parts.push(cleanLine.substring(cursor, match.index));
+          }
+          if (match[2]) {
+            // Bold
+            parts.push(<strong key={match.index}>{match[2]}</strong>);
+          } else if (match[3] && match[4]) {
+            // Link
+            parts.push(
+              <a key={match.index} href={match[4]} target="_blank" rel="noopener noreferrer">
+                {match[3]}
+              </a>
+            );
+          }
+          cursor = regex.lastIndex;
+        }
+        if (cursor < cleanLine.length) {
+          parts.push(cleanLine.substring(cursor));
+        }
+
+        if (isBullet) {
+          return <li key={idx}>{parts}</li>;
+        }
+        return <p key={idx}>{parts}</p>;
+      })}
+    </div>
+  );
+}
+
+function ChatPage() {
+  const [messages, setMessages] = useState([
+    {
+      from: 'bot',
+      text: "Hi! Ask me anything about IETE-SF, our 13 departments, heads, subheads, executives, traits, or tap a question below!"
+    }
+  ]);
+  const [input, setInput] = useState('');
+  const [typing, setTyping] = useState(false);
+  const listRef = useRef(null);
+
+  // Auto-scroll to bottom of chat list
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [messages, typing]);
+
+  const send = (queryText) => {
+    const q = (queryText || input).trim();
+    if (!q || typing) return;
+
+    // Append user message
+    setMessages(prev => [...prev, { from: 'user', text: q }]);
+    setInput('');
+    setTyping(true);
+
+    // Natural bot response delay
+    setTimeout(() => {
+      let botReply = "";
+      if (window.ChatbotEngine && typeof window.ChatbotEngine.processQuery === 'function') {
+        botReply = window.ChatbotEngine.processQuery(q);
+      } else {
+        botReply = "I am ready to answer your questions! You can ask about department heads, executives, or hackathons.";
+      }
+
+      setMessages(prev => [...prev, { from: 'bot', text: botReply }]);
+      setTyping(false);
+    }, 450);
+  };
+
+  return (
+    <section className="chat-section">
+      <h1 className="chat-title">chat w us</h1>
+      <p className="chat-subtitle">Ask us anything about IETE-SF, our events or how to join.</p>
+
+      {/* Suggested Prompt Chips */}
+      <div className="chip-row">
+        {PROMPT_CHIPS.map((chipText) => (
+          <button
+            key={chipText}
+            className="chip"
+            onClick={() => send(chipText)}
+          >
+            {chipText}
+          </button>
+        ))}
+      </div>
+
+      {/* Chat Window */}
+      <div className="chat-box">
+        <div className="chat-header-bar">
+          <div className="chat-status">
+            <span className="chat-status__dot"></span>
+            <span>IETE-SF Assistant (Online)</span>
+          </div>
+          <span>SVKM's NMIMS MPSTME</span>
+        </div>
+
+        <div className="chat-list" ref={listRef}>
+          {messages.map((m, i) => (
+            <div key={i} className={`chat-msg chat-msg--${m.from}`}>
+              {m.from === 'bot' ? formatMessage(m.text) : m.text}
+            </div>
+          ))}
+
+          {typing && (
+            <div className="chat-typing">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          )}
+        </div>
+
+        {/* Input Bar */}
+        <div className="chat-input">
+          <input
+            value={input}
+            placeholder="type your question..."
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') send();
+            }}
+            autoFocus
+          />
+          <button onClick={() => send()}>send</button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  return <ChatPage />;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,20 @@
+{
+  "name": "iete-sf-chatbot",
+  "version": "1.0.0",
+  "description": "Intelligent client-side chatbot for IETE-SF SVKM's NMIMS MPSTME official website",
+  "main": "js/chatbot-engine.js",
+  "scripts": {
+    "test": "node test/test-chatbot.js",
+    "start": "node -e \"const http=require('http'),fs=require('fs'),path=require('path');http.createServer((req,res)=>{let f=req.url==='/'?'/chat.html':req.url;let p=path.join(__dirname,f);if(fs.existsSync(p)){let ct=f.endsWith('.js')?'application/javascript':f.endsWith('.css')?'text/css':'text/html';res.writeHead(200,{'Content-Type':ct});res.end(fs.readFileSync(p))}else{res.writeHead(404);res.end('Not found')}}).listen(3000,()=>console.log('⚡ Server running at http://localhost:3000/chat.html'))\""
+  },
+  "keywords": [
+    "iete-sf",
+    "mpstme",
+    "chatbot",
+    "react",
+    "nlp",
+    "student-organization"
+  ],
+  "author": "IETE-SF Technical Team",
+  "license": "MIT"
+}
